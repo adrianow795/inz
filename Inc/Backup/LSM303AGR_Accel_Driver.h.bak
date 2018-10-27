@@ -1,0 +1,8 @@
+#ifndef LSM303AGR_ACCEL_DRIVER_H_
+#define LSM303AGR_ACCEL_DRIVER_H_
+#include "spi.h"
+void LSM303AGR_Accel_Init(void);
+void LSM303AGR_Accel_Read_X_Y_Z(uint8_t *Data);
+
+#endif
+

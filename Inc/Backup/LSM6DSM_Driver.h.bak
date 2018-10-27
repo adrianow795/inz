@@ -1,0 +1,8 @@
+#ifndef LSM6DSM_DRIVER_H_
+#define LSM6DSM_DRIVER_H_
+#include "spi.h"
+void LSM6DSM_Init(void);
+void LSM6DSM_Accel_Read_X_Y_Z(uint8_t *Data);
+void LSM6DSM_GYRO_Read_X_Y_Z(uint8_t *Data);
+
+#endif

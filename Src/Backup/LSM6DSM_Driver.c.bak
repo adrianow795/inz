@@ -1,0 +1,29 @@
+#include "LSM6DSM_Driver.h"
+#include "LSM6DSM.h"
+
+
+
+extern Sensor_t Sensor_LSM6DSM;
+
+void LSM6DSM_Init(void)
+{
+	//SPI 3-Wire , auto_incr
+	SPI_Sensor_Write(Sensor_LSM6DSM,LSM6DSM_CTRL3_C,0x0C);
+	//I2C disabled, GYRO LPF1 enabled
+	SPI_Sensor_Write(Sensor_LSM6DSM,LSM6DSM_CTRL4_C,0x06);  
+	// high peformacnce mode, 104Hz, +-2g accel
+	SPI_Sensor_Write(Sensor_LSM6DSM,LSM6DSM_CTRL1_XL,0x40); 
+	// high performance 500dps 
+	SPI_Sensor_Write(Sensor_LSM6DSM,LSM6DSM_CTRL2_G,0x44); 
+	
+}
+
+void LSM6DSM_Accel_Read_X_Y_Z(uint8_t *Data)
+{
+	SPI_Sensor_Read(Sensor_LSM6DSM, LSM6DSM_OUTX_L_XL, Data, 6);
+}
+
+void LSM6DSM_GYRO_Read_X_Y_Z(uint8_t *Data)
+{
+	SPI_Sensor_Read(Sensor_LSM6DSM, LSM6DSM_OUTX_L_G, Data, 6);
+}

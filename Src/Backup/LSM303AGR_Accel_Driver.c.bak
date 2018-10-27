@@ -1,0 +1,37 @@
+
+#include "LSM303AGR.h"
+#include "LSM303AGR_Accel_Driver.h"
+
+/*
+void LSM303AGR_Accel_Init(void)
+{
+	// HP filter normal mode 
+	SPI_Accel_Write(LSM303AGR_CTRL_REG2_A,0x00); 
+	// interrupt disabled
+	SPI_Accel_Write(LSM303AGR_CTRL_REG3_A,0x00); 
+	// Block data update on, +-2g, normal mode, SPI3-wire enabled
+	SPI_Accel_Write(LSM303AGR_CTRL_REG4_A,0x81); 
+	// 100Hz data rate, X,Y,Z axix enabled
+	SPI_Accel_Write(LSM303AGR_CTRL_REG1_A,0x57); 
+	HAL_Delay(90);
+}
+*/
+extern Sensor_t Sensor_Accel;
+
+void LSM303AGR_Accel_Init(void)
+{
+	// HP filter normal mode 
+	SPI_Sensor_Write(Sensor_Accel,LSM303AGR_CTRL_REG2_A,0x00); 
+	// interrupt disabled
+	SPI_Sensor_Write(Sensor_Accel, LSM303AGR_CTRL_REG3_A,0x00); 
+	// Block data update on, +-2g, normal mode, SPI3-wire enabled
+	SPI_Sensor_Write(Sensor_Accel, LSM303AGR_CTRL_REG4_A,0x81); 
+	// 100Hz data rate, X,Y,Z axix enabled
+	SPI_Sensor_Write(Sensor_Accel, LSM303AGR_CTRL_REG1_A,0x57); 
+	HAL_Delay(90);
+}
+
+void LSM303AGR_Accel_Read_X_Y_Z(uint8_t *Data)
+{
+	SPI_Sensor_Read(Sensor_Accel, LSM303AGR_OUT_X_L_A, Data, 6);
+}
