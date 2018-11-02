@@ -55,9 +55,10 @@
 
 /* USER CODE BEGIN Includes */
 #include "usbd_cdc_if.h"
-#include "LSM303AGR_Accel_Driver.h"
+#include "LSM303AGR_Driver.h"
 #include <stdio.h>
 #include "LSM6DSM_Driver.h"
+#include "String_Decoder.h"
 //#include "SensorTile.h"
 /* USER CODE END Includes */
 
@@ -67,6 +68,11 @@
 /* Private variables ---------------------------------------------------------*/
 	uint8_t ReceivedData[60]; // Tablica przechowujaca odebrane dane
 	uint8_t ReceivedDataFlag = 0; // Flaga informujaca o odebraniu danych
+	int16_t Raw_Data_Accel[3];
+	int16_t Raw_Data_Gyro[3];
+	double G_Data_Accel[3];
+	double DPS_Data_Gyro[3];
+	uint8_t SPI_Data[10];
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -74,6 +80,11 @@ void SystemClock_Config(void);
 
 /* USER CODE BEGIN PFP */
 /* Private function prototypes -----------------------------------------------*/
+uint8_t FindNull ( char * Buf);
+void CleanBuffer(char* Buf, uint8_t Size);
+void WriteIntoBuffer(char* Buf, char* str, uint8_t Buf_Size);
+void Request_handle(void);
+
 
 /* USER CODE END PFP */
 
@@ -81,16 +92,24 @@ void SystemClock_Config(void);
 //extern UART_HandleTypeDef huart5;
 	Sensor_t Sensor_Accel;
   Sensor_t Sensor_LSM6DSM;
+	extern Request_t Request;
 /* USER CODE END 0 */
 
 int main(void)
 {
 
   /* USER CODE BEGIN 1 */
-
 	Sensor_Accel.GPIOx = CS_A_GPIO_Port;
 	Sensor_Accel.GPIO_Pin = CS_A_Pin;
 	Sensor_Accel.Sensor = SENSOR_ACCEL;
+	
+	Sensor_LSM6DSM.GPIOx = CS_AG_GPIO_Port;
+	Sensor_LSM6DSM.GPIO_Pin = CS_AG_Pin;
+	Sensor_LSM6DSM.Sensor = SENSOR_AG;
+	
+	char* Tokens[MAX_ARGS_NUMBER+1];
+	char Buf[60] ;
+	uint8_t Value[2];
 	
   /* USER CODE END 1 */
 
@@ -116,64 +135,79 @@ int main(void)
   MX_USB_DEVICE_Init();
 
   /* USER CODE BEGIN 2 */
-	//HAL_GPIO_WritePin(GPIOG, GPIO_PIN_12, GPIO_PIN_RESET);
-	uint8_t Val[10] , LSM6DSM_Accel_Buffer[6], LSM6DSM_Gyro_Buffer[6];
-	Val[0] = 0x01;
-	
 	SPI_Initialization();
 	LSM303AGR_Accel_Init();
-//	SPI_Accel_Write(0x23,Val[0]);
-	SPI_Accel_Read(0x0F,Val,1);
-	
-	if ( Val[0] == 0x33 )
-	{
-		HAL_Delay(500);
-		HAL_GPIO_TogglePin(GPIOG, GPIO_PIN_12);
-		HAL_Delay(500);
-		HAL_GPIO_TogglePin(GPIOG, GPIO_PIN_12);
-	}
-	
-	
-	
+	LSM6DSM_Init();
+	LSM6DSM_Who_Am_I(Value);
+	sprintf(Buf,"Who_I_AM = %x \r\n",Value[0]);
+	CDC_Transmit_FS((uint8_t *)Buf,60);
+	HAL_Delay(1000);
 
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
 
-	int16_t X_Val = 0, Y_Val, Z_Val;
-	double X_g = 0, Y_g = 0, Z_g = 0;
-	char Buf[60] ;
-	
-	LSM6DSM_Init();
-	
+
 	
   while (1)
   {
-		//pomiar + konwersja = 152us
-		LSM303AGR_Accel_Read_X_Y_Z(Val);
-		
-		X_Val = (int16_t)(Val[0] | (Val[1] << 8));
-		X_Val >>= 6;
-		X_g = 4.0/1024.0 * (double)X_Val;
-
-		Y_Val = (int16_t)(Val[2] | (Val[3] << 8));
-		Y_Val >>= 6;
-		Y_g = 4.0/1024.0 * (double)Y_Val;
-
-		Z_Val = (int16_t)(Val[4] | (Val[5] << 8));
-		Z_Val >>= 6;
-		Z_g = 4.0/1024.0 * (double)Z_Val;
-		
-		sprintf(Buf,"X = %0.2fg, Y = %0.2fg, Z = %0.2fg ;\n\r",X_g, Y_g, Z_g);
+		/*
+		LSM303AGR_Accel_Read_X_Y_Z(Raw_Data_Accel);
+		LSM303AGR_Data_Conv_To_G(Raw_Data_Accel,3,G_Data);
+		sprintf(Buf,"X = %0.2f, Y = %0.2f, Z = %0.2f ;\n\r",G_Data[0],G_Data[1],G_Data[2]);
 		CDC_Transmit_FS((uint8_t *)Buf,60);
-		HAL_Delay(100);
+		
+		LSM6DSM_Accel_Read_X_Y_Z(Raw_Data_Accel);
+		LSM6DSM_Accel_Data_Conv_To_G(Raw_Data_Accel, G_Data, ACC_M_RANGE_2);
+		sprintf(Buf,"X = %0.2f, Y = %0.2f, Z = %0.2f ;\n\r",G_Data[0],G_Data[1],G_Data[2]);
+		CDC_Transmit_FS((uint8_t *)Buf,60);
+		for(int i = 0 ; i < 60; i++)
+		{
+			Buf[i] = 0;
+		}
+		
+		LSM6DSM_GYRO_Read_X_Y_Z(Raw_Data_Gyro);
+		LSM6DSM_Gyro_Data_Conv_To_DPS(Raw_Data_Gyro, DPS_Data, GYRO_M_RANGE_500);
+		sprintf(Buf,"Pitch = %3.2f, Roll = %3.2f, Yaw = %3.2f ;\n\r",DPS_Data[0],DPS_Data[1],DPS_Data[2]);
+
+		CDC_Transmit_FS((uint8_t *)Buf,60);
+		for(int i = 0 ; i < 60; i++)
+		{
+			Buf[i] = 0;
+		}
+		*/
+		
 		if(ReceivedDataFlag == 1)
 		{
 			ReceivedDataFlag = 0;
-			CDC_Transmit_FS(ReceivedData,60);
+			Find_Tokens((char*)ReceivedData,Tokens);
+			if(OK_STATUS == Decode_Tokens(Tokens))
+			{
+				Request_handle();
+			}
+			else
+			{
+				CDC_Transmit_FS((uint8_t*)"Unknown command\r\n",strlen("Unknown command\r\n")+1);
+			}
+			
+			
+			
+			/*sprintf(Buf,"Komenda: %d,\n\rLiczba argumentow: %d\r\n",Request.Command, Request.Number_Of_Arguments);
+			CDC_Transmit_FS((uint8_t*)Buf,FindNull(Buf));
+			
+			for (int i = 0; i < Request.Number_Of_Arguments; i++)
+			{
+				CleanBuffer(Buf,60);
+				sprintf(Buf,"Arg%d: 0x%x\r\n",i+1,Request.Arguments[i]);
+				CDC_Transmit_FS((uint8_t*)Buf,FindNull(Buf));
+				HAL_Delay(10);
+				HAL_GPIO_TogglePin(GPIOG, GPIO_PIN_12);
+			}			*/
 		}
-
+		
+		
+		HAL_Delay(100);
   /* USER CODE END WHILE */
 
   /* USER CODE BEGIN 3 */
@@ -268,6 +302,111 @@ void SystemClock_Config(void)
 }
 
 /* USER CODE BEGIN 4 */
+
+void Request_handle(void)
+{
+	char Response[60];
+	char Aux_Buf[5];
+	
+	switch (Request.Command)
+	{
+		// write  Reg_Add  reg_number  values
+		case CMD_WRITE:
+			if(Request.Arguments[1] > 1)
+			{
+				for ( uint8_t i = 0; i < Request.Arguments[1]; i++)
+				{
+					SPI_Sensor_Write(Sensor_LSM6DSM, Request.Arguments[0]+i, Request.Arguments[2+i]);
+					LSM6DSM_Analyze_Register(Request.Arguments[0]+i, Request.Arguments[2+i]);
+				}
+			}
+			else
+			{
+				SPI_Sensor_Write(Sensor_LSM6DSM, Request.Arguments[0], Request.Arguments[2]);
+			}
+			CleanBuffer(Response,60);
+			sprintf(Response,"ok\r\n");
+			CDC_Transmit_FS((uint8_t*)Response,FindNull(Response));
+			break;
+		
+		// read  Reg_Add   Regs_number(max 10)
+		case CMD_READ:
+			SPI_Sensor_Read(Sensor_LSM6DSM, Request.Arguments[0], SPI_Data, Request.Arguments[1]);
+			CleanBuffer(Response,60);
+			sprintf(Response,"0x%x ",SPI_Data[0]);
+			if(Request.Arguments[1] > 1)
+			{
+				for ( int i = 1; i < Request.Arguments[1]; i++)
+				{
+					sprintf(Aux_Buf,"0x%x ",SPI_Data[i]);
+					strcat(Response, Aux_Buf);
+				}
+			}
+			strcat(Response, "\r\n");
+			CDC_Transmit_FS((uint8_t*)Response,FindNull(Response));
+			break;
+		
+		// accel_m_xyz
+		case CMD_ACCEL_M_XYZ:
+			LSM6DSM_Accel_Read_X_Y_Z(Raw_Data_Accel);
+			CleanBuffer(Response,60);
+			sprintf(Response,"0x%x 0x%x 0x%x\n\r",Raw_Data_Accel[0],Raw_Data_Accel[1],Raw_Data_Accel[2]);
+			CDC_Transmit_FS((uint8_t*)Response,FindNull(Response));
+			break;
+		
+		// accel_m_xyz_g
+		case CMD_ACCEL_M_XYZ_G:
+			LSM6DSM_Accel_Read_X_Y_Z(Raw_Data_Accel);
+			LSM6DSM_Accel_Data_Conv_To_G(Raw_Data_Accel,G_Data_Accel, LSM6DSM_Get_Configuration(SENSOR_TYPE_ACC));
+			sprintf(Response,"%2.3f %2.3f %2.3f\n\r",G_Data_Accel[0],G_Data_Accel[1],G_Data_Accel[2]);
+			CDC_Transmit_FS((uint8_t*)Response,FindNull(Response));
+			break;
+		
+		// gyro_m_pyr
+		case CMD_GYRO_M_PYR_DPS:
+			LSM6DSM_GYRO_Read_X_Y_Z(Raw_Data_Gyro);
+			LSM6DSM_Gyro_Data_Conv_To_DPS(Raw_Data_Gyro, DPS_Data_Gyro, LSM6DSM_Get_Configuration(SENSOR_TYPE_GYRO));
+			sprintf(Response,"%4.3f %4.3f %4.3f\n\r",DPS_Data_Gyro[0],DPS_Data_Gyro[1],DPS_Data_Gyro[2]);
+			CDC_Transmit_FS((uint8_t*)Response,FindNull(Response));
+			break;
+		
+		case CMD_GYRO_M_PYR:
+			LSM6DSM_GYRO_Read_X_Y_Z(Raw_Data_Gyro);
+			CleanBuffer(Response,60);
+			sprintf(Response,"0x%x 0x%x 0x%x\n\r",Raw_Data_Gyro[0],Raw_Data_Gyro[1],Raw_Data_Gyro[2]);
+			CDC_Transmit_FS((uint8_t*)Response,FindNull(Response));
+		default:
+			break;
+	}
+	
+}
+
+void WriteIntoBuffer(char* Buf, char* str, uint8_t Buf_Size)
+{
+	uint8_t i = 0;
+	while ( str[i] != NULL && i < Buf_Size)
+	{
+		Buf[i] = str[i];
+	}
+}
+
+void CleanBuffer(char* Buf, uint8_t Size)
+{
+	for (int i = 0; i < Size; i++)
+	{
+		Buf[i] = 0;
+	}
+}
+
+uint8_t FindNull ( char * Buf)
+{
+	int i = 0; 
+	while (Buf[i] != 0)
+	{
+		i++;
+	}
+	return i;
+}
 
 /* USER CODE END 4 */
 

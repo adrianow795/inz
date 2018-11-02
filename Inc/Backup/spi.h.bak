@@ -64,7 +64,7 @@
 extern SPI_HandleTypeDef hspi2;
 
 /* USER CODE BEGIN Private defines */
-enum Sensor_Name { SENSOR_ACCEL, SENSOR_GYRO, SENSOR_MAG };
+enum Sensor_Name { SENSOR_ACCEL, SENSOR_AG, SENSOR_MAG };
 
 typedef struct Sensor_definition
 {

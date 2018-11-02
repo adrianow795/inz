@@ -36,7 +36,7 @@
 #include "stm32l4xx_it.h"
 
 /* USER CODE BEGIN 0 */
-
+extern volatile uint8_t LSM6DSM_DataReady;
 /* USER CODE END 0 */
 
 /* External variables --------------------------------------------------------*/
@@ -183,6 +183,28 @@ void SysTick_Handler(void)
 /* For the available peripheral interrupt handler names,                      */
 /* please refer to the startup file (startup_stm32l4xx.s).                    */
 /******************************************************************************/
+
+/**
+* @brief This function handles EXTI line2 interrupt.
+*/
+void EXTI2_IRQHandler(void)
+{
+	static uint16_t counter = 0;
+  /* USER CODE BEGIN EXTI2_IRQn 0 */
+
+  /* USER CODE END EXTI2_IRQn 0 */
+  HAL_GPIO_EXTI_IRQHandler(GPIO_PIN_2);
+	if(counter++ == 1000)
+	{
+		HAL_GPIO_TogglePin(GPIOG,GPIO_PIN_12);
+		counter = 0;
+	}
+	LSM6DSM_DataReady = 1;
+	
+  /* USER CODE BEGIN EXTI2_IRQn 1 */
+
+  /* USER CODE END EXTI2_IRQn 1 */
+}
 
 /**
 * @brief This function handles USB OTG FS global interrupt.

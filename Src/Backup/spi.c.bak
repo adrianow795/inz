@@ -315,9 +315,9 @@ void SPI_Accel_Read(uint8_t RegAdd, uint8_t *Data, uint8_t BytesNumber)
 void SPI_Sensor_Read(Sensor_t Sensor, uint8_t RegAdd, uint8_t *Data, uint8_t BytesNumber)
 {
 	SPI_Enable_Slave(Sensor.GPIOx, Sensor.GPIO_Pin);
-	if (BytesNumber > 1)
+	if (BytesNumber > 1 && Sensor.Sensor != SENSOR_AG)
 	{
-		SPI_Write_Byte(0xC0 | RegAdd);
+		SPI_Write_Byte(0xC0 | RegAdd);  
 	}
 	else
 	{

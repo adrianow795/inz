@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Project>
-<ProjectName>D:\AGH\Inzynierka\first\Accel_proj\\Accel_proj</ProjectName>
+<ProjectName>D:\AGH\Semestr_7\Inzynierka\inz\\Accel_proj</ProjectName>
 <CMSIS>..\Drivers\CMSIS</CMSIS>
 <HAL_Driver>C:\Users\Adrian\STM32Cube\Repository\STM32Cube_FW_L4_V1.10.0\Drivers\CMSIS</HAL_Driver>
 

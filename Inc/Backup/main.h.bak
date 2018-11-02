@@ -59,6 +59,8 @@
 
 #define LED_ORANGE_Pin GPIO_PIN_12
 #define LED_ORANGE_GPIO_Port GPIOG
+#define CS_AG_Pin GPIO_PIN_12
+#define CS_AG_GPIO_Port GPIOB
 #define CS_M_Pin GPIO_PIN_1
 #define CS_M_GPIO_Port GPIOB
 #define CS_A_Pin GPIO_PIN_4
