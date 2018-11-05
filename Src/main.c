@@ -86,6 +86,7 @@ void CleanBuffer(char* Buf, uint8_t Size);
 void WriteIntoBuffer(char* Buf, char* str, uint8_t Buf_Size);
 void Request_handle(void);
 uint8_t FindNewLine( char* str);
+void LSM6DSM_Callibrate(int16_t *AccOffset, int16_t *GyroOffset);
 
 /* USER CODE END PFP */
 
@@ -114,6 +115,8 @@ int main(void)
 	char* Tokens[MAX_ARGS_NUMBER+1];
 	char Buf[60] ;
 	uint8_t Value[2];
+	int16_t AccOffset[3] = {0,0,0};
+	int16_t GyroOffset[3] = {0,0,0};
 	StatusRegPointer = &StatusReg;
   /* USER CODE END 1 */
 
@@ -156,6 +159,7 @@ int main(void)
 
 	
 	char TxBufA[100], TxBufG[50];
+	LSM6DSM_Callibrate(AccOffset,GyroOffset);
 	
   while (1)
   {
@@ -222,6 +226,10 @@ int main(void)
 			LSM6DSM_Accel_Read_X_Y_Z(Raw_Data_Accel);
 			LSM6DSM_Accel_Data_Conv_To_G(Raw_Data_Accel,G_Data_Accel,LSM6DSM_Get_Configuration(SENSOR_TYPE_ACC));
 			LSM6DSM_GYRO_Read_X_Y_Z(Raw_Data_Gyro);
+			for(uint8_t i = 0; i < 3; i++)
+			{
+				Raw_Data_Gyro[i] -= GyroOffset[i];
+			}
 			LSM6DSM_Gyro_Data_Conv_To_DPS(Raw_Data_Gyro,DPS_Data_Gyro,LSM6DSM_Get_Configuration(SENSOR_TYPE_GYRO));
 			sprintf(TxBufA,"A:%1.3f;%1.3f;%1.3f;G:%3.1f;%3.1f;%3.1f\n",G_Data_Accel[0],G_Data_Accel[1],G_Data_Accel[2],DPS_Data_Gyro[0],DPS_Data_Gyro[1],DPS_Data_Gyro[2]);
 		  CDC_Transmit_FS((uint8_t*)TxBufA,FindNewLine(TxBufA));
@@ -439,6 +447,45 @@ uint8_t FindNewLine( char* str)
 		i++;
 	}
 	return ++i;
+}
+
+void LSM6DSM_Callibrate(int16_t *AccOffset, int16_t *GyroOffset)
+{
+	uint8_t SamplesCounter = 0;
+	int32_t AccSum[3] = {0,0,0};
+	int32_t GyroSum[3] = {0,0,0};
+	while(SamplesCounter < 50)
+	{
+		if(LSM6DSM_DataReady)
+		{
+			LSM6DSM_DataReady = 0;
+			LSM6DSM_Accel_Read_X_Y_Z(Raw_Data_Accel);
+			LSM6DSM_GYRO_Read_X_Y_Z(Raw_Data_Gyro);
+			SamplesCounter++;
+		}
+	}
+	SamplesCounter = 0;
+	
+	while(SamplesCounter < 50)
+	{
+		if(LSM6DSM_DataReady)
+		{
+			LSM6DSM_DataReady = 0;
+			LSM6DSM_Accel_Read_X_Y_Z(Raw_Data_Accel);
+			LSM6DSM_GYRO_Read_X_Y_Z(Raw_Data_Gyro);
+			SamplesCounter++;
+			for( uint8_t i = 0; i < 3; i++)
+			{
+				AccSum[i] += (int32_t)Raw_Data_Accel[i];
+				GyroSum[i] += (int32_t)Raw_Data_Gyro[i];
+			}
+		}
+	}
+	for ( uint8_t i = 0; i < 3; i++)
+	{
+		AccOffset[i] = (int16_t)(AccSum[i] / 50); 
+		GyroOffset[i] = (int16_t)(GyroSum[i] / 50);
+	}
 }
 
 /* USER CODE END 4 */

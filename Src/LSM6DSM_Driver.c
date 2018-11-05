@@ -49,11 +49,12 @@ void LSM6DSM_Init(void)
 	SPI_Sensor_Write(Sensor_LSM6DSM,LSM6DSM_CTRL4_C,0x03);  
 	// high peformacnce mode, 104Hz, +-2g accel --> 0x40
 	// high perf. 833Hz, +- 4g accel --> 0x78
-	SPI_Sensor_Write(Sensor_LSM6DSM,LSM6DSM_CTRL1_XL,0x78); 
+	// 416 --> 0x68
+	SPI_Sensor_Write(Sensor_LSM6DSM,LSM6DSM_CTRL1_XL,0x68); 
 	// high performance 500dps ,104hz 0x44
 	// high perf, 1000dps, 833Hz 0x78
 	//										 416Hz 0x68
-	SPI_Sensor_Write(Sensor_LSM6DSM,LSM6DSM_CTRL2_G,0x78); 
+	SPI_Sensor_Write(Sensor_LSM6DSM,LSM6DSM_CTRL2_G,0x68); 
 	// interrupts data ready - acc, gyro 
 	SPI_Sensor_Write(Sensor_LSM6DSM,LSM6DSM_INT2_CTRL,0x03); 
 	

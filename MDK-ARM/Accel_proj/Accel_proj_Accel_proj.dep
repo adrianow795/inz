@@ -770,7 +770,7 @@ I (../Drivers/STM32L4xx_HAL_Driver/Inc/stm32l4xx_hal_spi_ex.h)(0x5B0F1830)
 I (../Drivers/STM32L4xx_HAL_Driver/Inc/stm32l4xx_hal_pcd.h)(0x5B0F182E)
 I (../Drivers/STM32L4xx_HAL_Driver/Inc/stm32l4xx_ll_usb.h)(0x5B0F1830)
 I (../Drivers/STM32L4xx_HAL_Driver/Inc/stm32l4xx_hal_pcd_ex.h)(0x5B0F182E)
-F (../Src/main.c)(0x5BDC25B3)(--c99 -c --cpu Cortex-M4.fp -D__EVAL -D__MICROLIB -g -O0 --apcs=interwork --split_sections -I ../Inc -I ../Drivers/STM32L4xx_HAL_Driver/Inc -I ../Drivers/STM32L4xx_HAL_Driver/Inc/Legacy -I ../Drivers/CMSIS/Device/ST/STM32L4xx/Include -I ../Drivers/CMSIS/Include -I ../Middlewares/ST/STM32_USB_Device_Library/Core/Inc -I ../Middlewares/ST/STM32_USB_Device_Library/Class/CDC/Inc --C99-I.\RTE\_Accel_proj-IC:\Keil_v5\ARM\PACK\ARM\CMSIS\5.3.0\CMSIS\Include-IC:\Keil_v5\ARM\PACK\Keil\STM32L4xx_DFP\2.0.0\Drivers\CMSIS\Device\ST\STM32L4xx\Include-D__UVISION_VERSION="524" -D_RTE_ -DSTM32L476xx -DUSE_HAL_DRIVER -DSTM32L476xx-o accel_proj\main.o --omf_browse accel_proj\main.crf --depend accel_proj\main.d)
+F (../Src/main.c)(0x5BDDE4A2)(--c99 -c --cpu Cortex-M4.fp -D__EVAL -D__MICROLIB -g -O0 --apcs=interwork --split_sections -I ../Inc -I ../Drivers/STM32L4xx_HAL_Driver/Inc -I ../Drivers/STM32L4xx_HAL_Driver/Inc/Legacy -I ../Drivers/CMSIS/Device/ST/STM32L4xx/Include -I ../Drivers/CMSIS/Include -I ../Middlewares/ST/STM32_USB_Device_Library/Core/Inc -I ../Middlewares/ST/STM32_USB_Device_Library/Class/CDC/Inc --C99-I.\RTE\_Accel_proj-IC:\Keil_v5\ARM\PACK\ARM\CMSIS\5.3.0\CMSIS\Include-IC:\Keil_v5\ARM\PACK\Keil\STM32L4xx_DFP\2.0.0\Drivers\CMSIS\Device\ST\STM32L4xx\Include-D__UVISION_VERSION="524" -D_RTE_ -DSTM32L476xx -DUSE_HAL_DRIVER -DSTM32L476xx-o accel_proj\main.o --omf_browse accel_proj\main.crf --depend accel_proj\main.d)
 I (../Inc/main.h)(0x5BD44C20)
 I (../Drivers/STM32L4xx_HAL_Driver/Inc/stm32l4xx_hal.h)(0x5B0F182D)
 I (../Inc/stm32l4xx_hal_conf.h)(0x5BD44C20)
@@ -820,6 +820,8 @@ I (../Middlewares/ST/STM32_USB_Device_Library/Core/Inc/usbd_ctlreq.h)(0x5B0F1844
 I (../Inc/LSM303AGR_Driver.h)(0x5B5A18E6)
 I (../Inc/LSM6DSM_Driver.h)(0x5B6470D7)
 I (../Inc/String_Decoder.h)(0x5B5CAE29)
+I (C:\Keil_v5\ARM\ARMCC\include\cmath)(0x588BD7A4)
+I (C:\Keil_v5\ARM\ARMCC\include\math.h)(0x588BD7A4)
 F (../Src/stm32l4xx_hal_msp.c)(0x5BD44C20)(--c99 -c --cpu Cortex-M4.fp -D__EVAL -D__MICROLIB -g -O0 --apcs=interwork --split_sections -I ../Inc -I ../Drivers/STM32L4xx_HAL_Driver/Inc -I ../Drivers/STM32L4xx_HAL_Driver/Inc/Legacy -I ../Drivers/CMSIS/Device/ST/STM32L4xx/Include -I ../Drivers/CMSIS/Include -I ../Middlewares/ST/STM32_USB_Device_Library/Core/Inc -I ../Middlewares/ST/STM32_USB_Device_Library/Class/CDC/Inc --C99-I.\RTE\_Accel_proj-IC:\Keil_v5\ARM\PACK\ARM\CMSIS\5.3.0\CMSIS\Include-IC:\Keil_v5\ARM\PACK\Keil\STM32L4xx_DFP\2.0.0\Drivers\CMSIS\Device\ST\STM32L4xx\Include-D__UVISION_VERSION="524" -D_RTE_ -DSTM32L476xx -DUSE_HAL_DRIVER -DSTM32L476xx-o accel_proj\stm32l4xx_hal_msp.o --omf_browse accel_proj\stm32l4xx_hal_msp.crf --depend accel_proj\stm32l4xx_hal_msp.d)
 I (../Drivers/STM32L4xx_HAL_Driver/Inc/stm32l4xx_hal.h)(0x5B0F182D)
 I (../Inc/stm32l4xx_hal_conf.h)(0x5BD44C20)
@@ -855,7 +857,7 @@ I (../Drivers/STM32L4xx_HAL_Driver/Inc/stm32l4xx_hal_spi_ex.h)(0x5B0F1830)
 I (../Drivers/STM32L4xx_HAL_Driver/Inc/stm32l4xx_hal_pcd.h)(0x5B0F182E)
 I (../Drivers/STM32L4xx_HAL_Driver/Inc/stm32l4xx_ll_usb.h)(0x5B0F1830)
 I (../Drivers/STM32L4xx_HAL_Driver/Inc/stm32l4xx_hal_pcd_ex.h)(0x5B0F182E)
-F (../Src/gpio.c)(0x5BDB13D0)(--c99 -c --cpu Cortex-M4.fp -D__EVAL -D__MICROLIB -g -O0 --apcs=interwork --split_sections -I ../Inc -I ../Drivers/STM32L4xx_HAL_Driver/Inc -I ../Drivers/STM32L4xx_HAL_Driver/Inc/Legacy -I ../Drivers/CMSIS/Device/ST/STM32L4xx/Include -I ../Drivers/CMSIS/Include -I ../Middlewares/ST/STM32_USB_Device_Library/Core/Inc -I ../Middlewares/ST/STM32_USB_Device_Library/Class/CDC/Inc --C99-I.\RTE\_Accel_proj-IC:\Keil_v5\ARM\PACK\ARM\CMSIS\5.3.0\CMSIS\Include-IC:\Keil_v5\ARM\PACK\Keil\STM32L4xx_DFP\2.0.0\Drivers\CMSIS\Device\ST\STM32L4xx\Include-D__UVISION_VERSION="524" -D_RTE_ -DSTM32L476xx -DUSE_HAL_DRIVER -DSTM32L476xx-o accel_proj\gpio.o --omf_browse accel_proj\gpio.crf --depend accel_proj\gpio.d)
+F (../Src/gpio.c)(0x5BDCCF9F)(--c99 -c --cpu Cortex-M4.fp -D__EVAL -D__MICROLIB -g -O0 --apcs=interwork --split_sections -I ../Inc -I ../Drivers/STM32L4xx_HAL_Driver/Inc -I ../Drivers/STM32L4xx_HAL_Driver/Inc/Legacy -I ../Drivers/CMSIS/Device/ST/STM32L4xx/Include -I ../Drivers/CMSIS/Include -I ../Middlewares/ST/STM32_USB_Device_Library/Core/Inc -I ../Middlewares/ST/STM32_USB_Device_Library/Class/CDC/Inc --C99-I.\RTE\_Accel_proj-IC:\Keil_v5\ARM\PACK\ARM\CMSIS\5.3.0\CMSIS\Include-IC:\Keil_v5\ARM\PACK\Keil\STM32L4xx_DFP\2.0.0\Drivers\CMSIS\Device\ST\STM32L4xx\Include-D__UVISION_VERSION="524" -D_RTE_ -DSTM32L476xx -DUSE_HAL_DRIVER -DSTM32L476xx-o accel_proj\gpio.o --omf_browse accel_proj\gpio.crf --depend accel_proj\gpio.d)
 I (../Inc/gpio.h)(0x5BD44C1E)
 I (../Drivers/STM32L4xx_HAL_Driver/Inc/stm32l4xx_hal.h)(0x5B0F182D)
 I (../Inc/stm32l4xx_hal_conf.h)(0x5BD44C20)
@@ -891,7 +893,7 @@ I (../Drivers/STM32L4xx_HAL_Driver/Inc/stm32l4xx_hal_spi_ex.h)(0x5B0F1830)
 I (../Drivers/STM32L4xx_HAL_Driver/Inc/stm32l4xx_hal_pcd.h)(0x5B0F182E)
 I (../Drivers/STM32L4xx_HAL_Driver/Inc/stm32l4xx_ll_usb.h)(0x5B0F1830)
 I (../Drivers/STM32L4xx_HAL_Driver/Inc/stm32l4xx_hal_pcd_ex.h)(0x5B0F182E)
-F (../Src/stm32l4xx_it.c)(0x5BDB25B5)(--c99 -c --cpu Cortex-M4.fp -D__EVAL -D__MICROLIB -g -O0 --apcs=interwork --split_sections -I ../Inc -I ../Drivers/STM32L4xx_HAL_Driver/Inc -I ../Drivers/STM32L4xx_HAL_Driver/Inc/Legacy -I ../Drivers/CMSIS/Device/ST/STM32L4xx/Include -I ../Drivers/CMSIS/Include -I ../Middlewares/ST/STM32_USB_Device_Library/Core/Inc -I ../Middlewares/ST/STM32_USB_Device_Library/Class/CDC/Inc --C99-I.\RTE\_Accel_proj-IC:\Keil_v5\ARM\PACK\ARM\CMSIS\5.3.0\CMSIS\Include-IC:\Keil_v5\ARM\PACK\Keil\STM32L4xx_DFP\2.0.0\Drivers\CMSIS\Device\ST\STM32L4xx\Include-D__UVISION_VERSION="524" -D_RTE_ -DSTM32L476xx -DUSE_HAL_DRIVER -DSTM32L476xx-o accel_proj\stm32l4xx_it.o --omf_browse accel_proj\stm32l4xx_it.crf --depend accel_proj\stm32l4xx_it.d)
+F (../Src/stm32l4xx_it.c)(0x5BDCCF9F)(--c99 -c --cpu Cortex-M4.fp -D__EVAL -D__MICROLIB -g -O0 --apcs=interwork --split_sections -I ../Inc -I ../Drivers/STM32L4xx_HAL_Driver/Inc -I ../Drivers/STM32L4xx_HAL_Driver/Inc/Legacy -I ../Drivers/CMSIS/Device/ST/STM32L4xx/Include -I ../Drivers/CMSIS/Include -I ../Middlewares/ST/STM32_USB_Device_Library/Core/Inc -I ../Middlewares/ST/STM32_USB_Device_Library/Class/CDC/Inc --C99-I.\RTE\_Accel_proj-IC:\Keil_v5\ARM\PACK\ARM\CMSIS\5.3.0\CMSIS\Include-IC:\Keil_v5\ARM\PACK\Keil\STM32L4xx_DFP\2.0.0\Drivers\CMSIS\Device\ST\STM32L4xx\Include-D__UVISION_VERSION="524" -D_RTE_ -DSTM32L476xx -DUSE_HAL_DRIVER -DSTM32L476xx-o accel_proj\stm32l4xx_it.o --omf_browse accel_proj\stm32l4xx_it.crf --depend accel_proj\stm32l4xx_it.d)
 I (../Drivers/STM32L4xx_HAL_Driver/Inc/stm32l4xx_hal.h)(0x5B0F182D)
 I (../Inc/stm32l4xx_hal_conf.h)(0x5BD44C20)
 I (../Inc/main.h)(0x5BD44C20)
@@ -926,7 +928,7 @@ I (../Drivers/STM32L4xx_HAL_Driver/Inc/stm32l4xx_hal_spi_ex.h)(0x5B0F1830)
 I (../Drivers/STM32L4xx_HAL_Driver/Inc/stm32l4xx_hal_pcd.h)(0x5B0F182E)
 I (../Drivers/STM32L4xx_HAL_Driver/Inc/stm32l4xx_ll_usb.h)(0x5B0F1830)
 I (../Drivers/STM32L4xx_HAL_Driver/Inc/stm32l4xx_hal_pcd_ex.h)(0x5B0F182E)
-I (../Inc/stm32l4xx_it.h)(0x5BD44C20)
+I (../Inc/stm32l4xx_it.h)(0x5BDCCF9F)
 F (../Src/spi.c)(0x5BD44C1F)(--c99 -c --cpu Cortex-M4.fp -D__EVAL -D__MICROLIB -g -O0 --apcs=interwork --split_sections -I ../Inc -I ../Drivers/STM32L4xx_HAL_Driver/Inc -I ../Drivers/STM32L4xx_HAL_Driver/Inc/Legacy -I ../Drivers/CMSIS/Device/ST/STM32L4xx/Include -I ../Drivers/CMSIS/Include -I ../Middlewares/ST/STM32_USB_Device_Library/Core/Inc -I ../Middlewares/ST/STM32_USB_Device_Library/Class/CDC/Inc --C99-I.\RTE\_Accel_proj-IC:\Keil_v5\ARM\PACK\ARM\CMSIS\5.3.0\CMSIS\Include-IC:\Keil_v5\ARM\PACK\Keil\STM32L4xx_DFP\2.0.0\Drivers\CMSIS\Device\ST\STM32L4xx\Include-D__UVISION_VERSION="524" -D_RTE_ -DSTM32L476xx -DUSE_HAL_DRIVER -DSTM32L476xx-o accel_proj\spi.o --omf_browse accel_proj\spi.crf --depend accel_proj\spi.d)
 I (../Inc/spi.h)(0x5BD44C1F)
 I (../Drivers/STM32L4xx_HAL_Driver/Inc/stm32l4xx_hal.h)(0x5B0F182D)
@@ -1142,7 +1144,7 @@ I (../Middlewares/ST/STM32_USB_Device_Library/Class/CDC/Inc/usbd_cdc.h)(0x5B0F18
 I (../Inc/usbd_cdc_if.h)(0x5B58D4BA)
 F (..\Inc\LSM303AGR.h)(0x5B2034FB)()
 F (..\Inc\LSM6DSM.h)(0x5B576434)()
-F (..\Src\LSM6DSM_Driver.c)(0x5BDC4971)(--c99 -c --cpu Cortex-M4.fp -D__EVAL -D__MICROLIB -g -O0 --apcs=interwork --split_sections -I ../Inc -I ../Drivers/STM32L4xx_HAL_Driver/Inc -I ../Drivers/STM32L4xx_HAL_Driver/Inc/Legacy -I ../Drivers/CMSIS/Device/ST/STM32L4xx/Include -I ../Drivers/CMSIS/Include -I ../Middlewares/ST/STM32_USB_Device_Library/Core/Inc -I ../Middlewares/ST/STM32_USB_Device_Library/Class/CDC/Inc --C99-I.\RTE\_Accel_proj-IC:\Keil_v5\ARM\PACK\ARM\CMSIS\5.3.0\CMSIS\Include-IC:\Keil_v5\ARM\PACK\Keil\STM32L4xx_DFP\2.0.0\Drivers\CMSIS\Device\ST\STM32L4xx\Include-D__UVISION_VERSION="524" -D_RTE_ -DSTM32L476xx -DUSE_HAL_DRIVER -DSTM32L476xx-o accel_proj\lsm6dsm_driver.o --omf_browse accel_proj\lsm6dsm_driver.crf --depend accel_proj\lsm6dsm_driver.d)
+F (..\Src\LSM6DSM_Driver.c)(0x5BDDE5A1)(--c99 -c --cpu Cortex-M4.fp -D__EVAL -D__MICROLIB -g -O0 --apcs=interwork --split_sections -I ../Inc -I ../Drivers/STM32L4xx_HAL_Driver/Inc -I ../Drivers/STM32L4xx_HAL_Driver/Inc/Legacy -I ../Drivers/CMSIS/Device/ST/STM32L4xx/Include -I ../Drivers/CMSIS/Include -I ../Middlewares/ST/STM32_USB_Device_Library/Core/Inc -I ../Middlewares/ST/STM32_USB_Device_Library/Class/CDC/Inc --C99-I.\RTE\_Accel_proj-IC:\Keil_v5\ARM\PACK\ARM\CMSIS\5.3.0\CMSIS\Include-IC:\Keil_v5\ARM\PACK\Keil\STM32L4xx_DFP\2.0.0\Drivers\CMSIS\Device\ST\STM32L4xx\Include-D__UVISION_VERSION="524" -D_RTE_ -DSTM32L476xx -DUSE_HAL_DRIVER -DSTM32L476xx-o accel_proj\lsm6dsm_driver.o --omf_browse accel_proj\lsm6dsm_driver.crf --depend accel_proj\lsm6dsm_driver.d)
 I (../Inc/LSM6DSM_Driver.h)(0x5B6470D7)
 I (../Inc/spi.h)(0x5BD44C1F)
 I (../Drivers/STM32L4xx_HAL_Driver/Inc/stm32l4xx_hal.h)(0x5B0F182D)
