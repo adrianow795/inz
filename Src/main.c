@@ -60,6 +60,7 @@
 #include "LSM6DSM_Driver.h"
 #include "String_Decoder.h"
 #include <cmath>
+#include "ComplementaryFilter.h"
 //#include "SensorTile.h"
 /* USER CODE END Includes */
 
@@ -118,6 +119,7 @@ int main(void)
 	int16_t AccOffset[3] = {0,0,0};
 	int16_t GyroOffset[3] = {0,0,0};
 	StatusRegPointer = &StatusReg;
+	double ComplementaryData[3] = { 0.0,0.0,0.0 };
   /* USER CODE END 1 */
 
   /* MCU Configuration----------------------------------------------------------*/
@@ -231,8 +233,13 @@ int main(void)
 				Raw_Data_Gyro[i] -= GyroOffset[i];
 			}
 			LSM6DSM_Gyro_Data_Conv_To_DPS(Raw_Data_Gyro,DPS_Data_Gyro,LSM6DSM_Get_Configuration(SENSOR_TYPE_GYRO));
-			sprintf(TxBufA,"A:%1.3f;%1.3f;%1.3f;G:%3.1f;%3.1f;%3.1f\n",G_Data_Accel[0],G_Data_Accel[1],G_Data_Accel[2],DPS_Data_Gyro[0],DPS_Data_Gyro[1],DPS_Data_Gyro[2]);
-		  CDC_Transmit_FS((uint8_t*)TxBufA,FindNewLine(TxBufA));
+			ComplementaryFilter_ComputeAngles(G_Data_Accel,DPS_Data_Gyro,416,ComplementaryData);
+			//sprintf(TxBufA,"A:%1.3f;%1.3f;%1.3f;G:%3.1f;%3.1f;%3.1f\n",G_Data_Accel[0],G_Data_Accel[1],G_Data_Accel[2],DPS_Data_Gyro[0],DPS_Data_Gyro[1],DPS_Data_Gyro[2]);
+		  //CDC_Transmit_FS((uint8_t*)TxBufA,FindNewLine(TxBufA));
+			sprintf(TxBufA,"%3.3f;%3.3f;%3.3f\n",ComplementaryData[0],ComplementaryData[1],ComplementaryData[2]); 
+			CDC_Transmit_FS((uint8_t*)TxBufA,FindNewLine(TxBufA));
+			//sprintf(TxBufA,"%3.2f;%3.2f;%3.2f\r\n",DPS_Data_Gyro[0],DPS_Data_Gyro[1],DPS_Data_Gyro[2]);
+			//CDC_Transmit_FS((uint8_t*)TxBufA,FindNewLine(TxBufA));
 		}
 		
 		

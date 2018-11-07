@@ -630,6 +630,16 @@
               <FileType>5</FileType>
               <FilePath>..\Inc\String_Decoder.h</FilePath>
             </File>
+            <File>
+              <FileName>ComplementaryFilter.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\Inc\ComplementaryFilter.h</FilePath>
+            </File>
+            <File>
+              <FileName>ComplementaryFilter.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Src\ComplementaryFilter.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
