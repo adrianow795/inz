@@ -22,7 +22,7 @@
 #define LSM6DSM_CTRL3_C  											0x12
 #define LSM6DSM_CTRL4_C  											0x13
 #define LSM6DSM_CTRL5_C  											0x14
-#define LSM6DSM_CTRL6_G  											0x15
+#define LSM6DSM_CTRL6_C  											0x15
 #define LSM6DSM_CTRL7_G  											0x16
 #define LSM6DSM_CTRL8_XL  										0x17
 #define LSM6DSM_CTRL9_XL  										0x18

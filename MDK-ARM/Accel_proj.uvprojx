@@ -336,7 +336,7 @@
               <MiscControls>--C99</MiscControls>
               <Define>USE_HAL_DRIVER,STM32L476xx</Define>
               <Undefine></Undefine>
-              <IncludePath>../Inc;                    ../Drivers/STM32L4xx_HAL_Driver/Inc;                    ../Drivers/STM32L4xx_HAL_Driver/Inc/Legacy;                    ../Drivers/CMSIS/Device/ST/STM32L4xx/Include;                    ../Drivers/CMSIS/Include;   ../Middlewares/ST/STM32_USB_Device_Library/Core/Inc;   ../Middlewares/ST/STM32_USB_Device_Library/Class/CDC/Inc</IncludePath>
+              <IncludePath>../Inc;                     ../Drivers/STM32L4xx_HAL_Driver/Inc;                     ../Drivers/STM32L4xx_HAL_Driver/Inc/Legacy;                     ../Drivers/CMSIS/Device/ST/STM32L4xx/Include;                     ../Drivers/CMSIS/Include;    ../Middlewares/ST/STM32_USB_Device_Library/Core/Inc;    ../Middlewares/ST/STM32_USB_Device_Library/Class/CDC/Inc</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -639,6 +639,36 @@
               <FileName>ComplementaryFilter.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\Src\ComplementaryFilter.c</FilePath>
+            </File>
+            <File>
+              <FileName>MadgwickAHRS.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Src\MadgwickAHRS.c</FilePath>
+            </File>
+            <File>
+              <FileName>MadgwickAHRS.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\Inc\MadgwickAHRS.h</FilePath>
+            </File>
+            <File>
+              <FileName>IMU.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Src\IMU.c</FilePath>
+            </File>
+            <File>
+              <FileName>IMU.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\Inc\IMU.h</FilePath>
+            </File>
+            <File>
+              <FileName>Quaternion.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\Inc\Quaternion.h</FilePath>
+            </File>
+            <File>
+              <FileName>Quaternion.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Src\Quaternion.c</FilePath>
             </File>
           </Files>
         </Group>

@@ -22,18 +22,20 @@ Dialog DLL:      TCM.DLL V1.32.0.0
  
 <h2>Project:</h2>
 D:\AGH\Semestr_7\Inzynierka\inz\MDK-ARM\Accel_proj.uvprojx
-Project File Date:  11/05/2018
+Project File Date:  11/17/2018
 
 <h2>Output:</h2>
 *** Using Compiler 'V5.06 update 5 (build 528)', folder: 'C:\Keil_v5\ARM\ARMCC\Bin'
 Build target 'Accel_proj'
-compiling ComplementaryFilter.c...
-..\Src\ComplementaryFilter.c(24): warning:  #1-D: last line of file ends without a newline
+compiling LSM6DSM_Driver.c...
+..\Src\LSM6DSM_Driver.c(253): warning:  #1-D: last line of file ends without a newline
   }
-..\Src\ComplementaryFilter.c: 1 warning, 0 errors
+..\Src\LSM6DSM_Driver.c: 1 warning, 0 errors
 linking...
-Program Size: Code=30748 RO-data=796 RW-data=548 ZI-data=23380  
-"Accel_proj\Accel_proj.axf" - 0 Error(s), 1 Warning(s).
+Accel_proj\Accel_proj.axf: Warning: L6989W: Could not apply patch sdcomp-29491-629360 to instruction VPOP     {d8-d12} at offset 0x24, instruction is within an IT block and is not the last instruction for sin_i_x.o(i.____kernel_sin$lsc).
+Program Size: Code=24692 RO-data=496 RW-data=544 ZI-data=23352  
+Finished: 0 information, 1 warning and 0 error messages.
+"Accel_proj\Accel_proj.axf" - 0 Error(s), 2 Warning(s).
 
 <h2>Software Packages used:</h2>
 
@@ -56,7 +58,7 @@ Package Vendor: Keil
 <h2>Collection of Component Files used:</h2>
 
    * Component: ARM::CMSIS:CORE:5.1.1
-Build Time Elapsed:  00:00:00
+Build Time Elapsed:  00:00:03
 </pre>
 </body>
 </html>

@@ -60,7 +60,10 @@
 #include "LSM6DSM_Driver.h"
 #include "String_Decoder.h"
 #include <cmath>
-#include "ComplementaryFilter.h"
+//#include "Quaternion.h"
+//#include "IMU.h"
+//#include "ComplementaryFilter.h"
+#include "MadgwickAHRS.h"
 //#include "SensorTile.h"
 /* USER CODE END Includes */
 
@@ -68,6 +71,8 @@
 
 /* USER CODE BEGIN PV */
 /* Private variables ---------------------------------------------------------*/
+#define PI 				3.14159265359
+
 uint8_t ReceivedData[60]; // Tablica przechowujaca odebrane dane
 uint8_t ReceivedDataFlag = 0; // Flaga informujaca o odebraniu danych
 int16_t Raw_Data_Accel[3];
@@ -120,6 +125,7 @@ int main(void)
 	int16_t GyroOffset[3] = {0,0,0};
 	StatusRegPointer = &StatusReg;
 	double ComplementaryData[3] = { 0.0,0.0,0.0 };
+	float q0 = 0, q1=0,q2 =0, q3 =0;
   /* USER CODE END 1 */
 
   /* MCU Configuration----------------------------------------------------------*/
@@ -228,16 +234,34 @@ int main(void)
 			LSM6DSM_Accel_Read_X_Y_Z(Raw_Data_Accel);
 			LSM6DSM_Accel_Data_Conv_To_G(Raw_Data_Accel,G_Data_Accel,LSM6DSM_Get_Configuration(SENSOR_TYPE_ACC));
 			LSM6DSM_GYRO_Read_X_Y_Z(Raw_Data_Gyro);
+			/*
 			for(uint8_t i = 0; i < 3; i++)
 			{
 				Raw_Data_Gyro[i] -= GyroOffset[i];
 			}
+			*/
 			LSM6DSM_Gyro_Data_Conv_To_DPS(Raw_Data_Gyro,DPS_Data_Gyro,LSM6DSM_Get_Configuration(SENSOR_TYPE_GYRO));
-			ComplementaryFilter_ComputeAngles(G_Data_Accel,DPS_Data_Gyro,416,ComplementaryData);
-			//sprintf(TxBufA,"A:%1.3f;%1.3f;%1.3f;G:%3.1f;%3.1f;%3.1f\n",G_Data_Accel[0],G_Data_Accel[1],G_Data_Accel[2],DPS_Data_Gyro[0],DPS_Data_Gyro[1],DPS_Data_Gyro[2]);
-		  //CDC_Transmit_FS((uint8_t*)TxBufA,FindNewLine(TxBufA));
-			sprintf(TxBufA,"%3.3f;%3.3f;%3.3f\n",ComplementaryData[0],ComplementaryData[1],ComplementaryData[2]); 
-			CDC_Transmit_FS((uint8_t*)TxBufA,FindNewLine(TxBufA));
+	   // MadgwickAHRSupdate(DPS_Data_Gyro[0],DPS_Data_Gyro[1],DPS_Data_Gyro[2],G_Data_Accel[0],G_Data_Accel[1],G_Data_Accel[2],0,0,0);
+			//MadgwickAHRSupdate((float)Raw_Data_Accel[0],(float)Raw_Data_Accel[1],(float)Raw_Data_Accel[2],(float)Raw_Data_Accel[0],(float)Raw_Data_Accel[1],(float)Raw_Data_Accel[2],0,0,0);
+			
+	  	//GetQuaterion(&q0,&q1,&q2,&q3);
+			//ComplementaryData[0]	= 57.2957795 * atan2f(q0*q1 + q2*q3, 0.5f - q1*q1 - q2*q2);
+			//ComplementaryData[1]	= 57.2957795 * asinf(-2.0f * (q1*q3 - q0*q2));
+			//ComplementaryData[2]		= 57.2957795 * atan2f(q1*q2 + q0*q3, 0.5f - q2*q2 - q3*q3);
+
+			
+			//ComplementaryFilter_ComputeAngles(G_Data_Accel,DPS_Data_Gyro,416,ComplementaryData);
+			sprintf(TxBufA,"A:%1.3f;%1.3f;%1.3f;G:%3.1f;%3.1f;%3.1f\r\n",G_Data_Accel[0],G_Data_Accel[1],G_Data_Accel[2],DPS_Data_Gyro[0],DPS_Data_Gyro[1],DPS_Data_Gyro[2]);
+		  CDC_Transmit_FS((uint8_t*)TxBufA,FindNewLine(TxBufA));
+			
+			//IMUupdate(DPS_Data_Gyro[0],DPS_Data_Gyro[1],DPS_Data_Gyro[2],G_Data_Accel[0],G_Data_Accel[1],G_Data_Accel[2]);
+			//ComplementaryData[0]	= atan2f(2.0f * (q0 * q1 + q2 * q3), q0 * q0 - q1 * q1 - q2 * q2 + q3 * q3) * 180.0f / PI;
+			//ComplementaryData[1]	= -asinf(2.0f * (q1 * q3 - q0 * q2)) * 180.0f / PI;
+			//ComplementaryData[2]		= atan2f(2.0f * (q1 * q2 + q0 * q3), q0 * q0 + q1 * q1 - q2 * q2 - q3 * q3) * 180.0f / PI;
+
+			
+			//sprintf(TxBufA,"%3.3f;%3.3f;%3.3f\n",ComplementaryData[0],ComplementaryData[1],ComplementaryData[2]); 
+			//CDC_Transmit_FS((uint8_t*)TxBufA,FindNewLine(TxBufA));
 			//sprintf(TxBufA,"%3.2f;%3.2f;%3.2f\r\n",DPS_Data_Gyro[0],DPS_Data_Gyro[1],DPS_Data_Gyro[2]);
 			//CDC_Transmit_FS((uint8_t*)TxBufA,FindNewLine(TxBufA));
 		}

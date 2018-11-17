@@ -189,20 +189,19 @@ void SysTick_Handler(void)
 */
 void EXTI2_IRQHandler(void)
 {
-	static uint16_t counter = 0;
   /* USER CODE BEGIN EXTI2_IRQn 0 */
-
+	static uint16_t counter = 0;
   /* USER CODE END EXTI2_IRQn 0 */
   HAL_GPIO_EXTI_IRQHandler(GPIO_PIN_2);
-	if(counter++ == 1000)
+	
+  /* USER CODE BEGIN EXTI2_IRQn 1 */
+	LSM6DSM_DataReady = 1;
+	if(counter++ == 833)
 	{
 		HAL_GPIO_TogglePin(GPIOG,GPIO_PIN_12);
 		counter = 0;
 	}
-	LSM6DSM_DataReady = 1;
 	
-  /* USER CODE BEGIN EXTI2_IRQn 1 */
-
   /* USER CODE END EXTI2_IRQn 1 */
 }
 
@@ -216,7 +215,7 @@ void OTG_FS_IRQHandler(void)
   /* USER CODE END OTG_FS_IRQn 0 */
   HAL_PCD_IRQHandler(&hpcd_USB_OTG_FS);
   /* USER CODE BEGIN OTG_FS_IRQn 1 */
-
+	
   /* USER CODE END OTG_FS_IRQn 1 */
 }
 
