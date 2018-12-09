@@ -29,7 +29,7 @@
 
 #define Kp 2.0f			// proportional gain governs rate of convergence to accelerometer/magnetometer
 #define Ki 0.005f		// integral gain governs rate of convergence of gyroscope biases
-#define halfT 0.5f		// half the sample period
+#define halfT (1.0/(2.0*833.0))		// half the sample period
 
 //---------------------------------------------------------------------------------------------------
 // Variable definitions

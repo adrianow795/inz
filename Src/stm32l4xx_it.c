@@ -193,7 +193,6 @@ void EXTI2_IRQHandler(void)
 	static uint16_t counter = 0;
   /* USER CODE END EXTI2_IRQn 0 */
   HAL_GPIO_EXTI_IRQHandler(GPIO_PIN_2);
-	
   /* USER CODE BEGIN EXTI2_IRQn 1 */
 	LSM6DSM_DataReady = 1;
 	if(counter++ == 833)

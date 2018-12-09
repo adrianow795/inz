@@ -65,11 +65,11 @@ void LSM6DSM_Init(void)
 	*/
 
 	SPI_Sensor_Write(Sensor_LSM6DSM,LSM6DSM_CTRL3_C,0x0C);
-	SPI_Sensor_Write(Sensor_LSM6DSM,LSM6DSM_CTRL1_XL,0x7C);//lpf1_sel
+	SPI_Sensor_Write(Sensor_LSM6DSM,LSM6DSM_CTRL1_XL,0x7C);
 	SPI_Sensor_Write(Sensor_LSM6DSM,LSM6DSM_CTRL2_G,0x7C);
-	SPI_Sensor_Write(Sensor_LSM6DSM,LSM6DSM_CTRL4_C,0x06); //
+	SPI_Sensor_Write(Sensor_LSM6DSM,LSM6DSM_CTRL4_C,0x06); 
 	SPI_Sensor_Write(Sensor_LSM6DSM,LSM6DSM_CTRL6_C,0x03);
-	SPI_Sensor_Write(Sensor_LSM6DSM,LSM6DSM_CTRL7_G,0x70);
+	SPI_Sensor_Write(Sensor_LSM6DSM,LSM6DSM_CTRL7_G,0x0);
 	SPI_Sensor_Write(Sensor_LSM6DSM,LSM6DSM_CTRL8_XL,0xC0);
 	SPI_Sensor_Write(Sensor_LSM6DSM,LSM6DSM_INT2_CTRL,0x03);
 	/*

@@ -42,9 +42,37 @@ static Sensor_Configuration_t Gyro_Configuration;
  */
 void LSM6DSM_Init(void)
 {
-	
-	//SPI 3-Wire , auto_incr
+	/*
+-Accel - 833Hz, -+8g   
+	CTRL1_XL : 0x7C
+-Gyro - 833Hz, -+2000dps
+	CTRL2_G : 0x7C
+-Common - continuous update, int high, push-pull int2, 3-wire SPI, 
+		  automatically incremented address during reading, LSB Endian
+	CTRL3_C : 0x0C
+-Common - SPI only, en LPF1 for Gyro
+	CTRL4_C: 0x06
+-Common - no rounding, self-tests disabled	
+	CTRL5_C :0x00
+-Common - gyro LPF1 bandwidth 245Hz
+	CTRL6_C : 0x0
+-Gyro - high-perf mode en,  HPF en, 1.04Hz -cutoff freq
+	CTRL7_G : 0x60
+-Accel - LPF2 en, ODR/9
+	CTRL8_XL: 0xC0
+-Interrupt - gyro, accel
+	INT2_CTRL: 0x03
+	*/
+
 	SPI_Sensor_Write(Sensor_LSM6DSM,LSM6DSM_CTRL3_C,0x0C);
+	SPI_Sensor_Write(Sensor_LSM6DSM,LSM6DSM_CTRL1_XL,0x7C);//lpf1_sel
+	SPI_Sensor_Write(Sensor_LSM6DSM,LSM6DSM_CTRL2_G,0x7C);
+	SPI_Sensor_Write(Sensor_LSM6DSM,LSM6DSM_CTRL4_C,0x06); //
+	SPI_Sensor_Write(Sensor_LSM6DSM,LSM6DSM_CTRL6_C,0x03);
+	SPI_Sensor_Write(Sensor_LSM6DSM,LSM6DSM_CTRL7_G,0x70);
+	SPI_Sensor_Write(Sensor_LSM6DSM,LSM6DSM_CTRL8_XL,0xC0);
+	SPI_Sensor_Write(Sensor_LSM6DSM,LSM6DSM_INT2_CTRL,0x03);
+	/*
 	//I2C disabled, GYRO LPF1 enabled
 	SPI_Sensor_Write(Sensor_LSM6DSM,LSM6DSM_CTRL4_C,0x03);  //without filters -> 0x02
 	//LPF gyro bandwitdht
@@ -63,11 +91,12 @@ void LSM6DSM_Init(void)
 	// HP filtrer gyro
 	SPI_Sensor_Write(Sensor_LSM6DSM,LSM6DSM_CTRL7_G,0x00);  // without filters -> 0x00
 	//LPF for gyro - cut off freq
+	*/
 	
-	Accel_Configuration.M_Range = ACC_M_RANGE_4;
+	Accel_Configuration.M_Range = ACC_M_RANGE_8;
 	Accel_Configuration.Sensor_Type = SENSOR_TYPE_ACC;
 	Gyro_Configuration.Sensor_Type = SENSOR_TYPE_GYRO;
-	Gyro_Configuration.M_Range = GYRO_M_RANGE_1000;
+	Gyro_Configuration.M_Range = GYRO_M_RANGE_2000;
 	
 }
 
