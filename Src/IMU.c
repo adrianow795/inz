@@ -30,18 +30,18 @@
 #define Kp 2.0f			// proportional gain governs rate of convergence to accelerometer/magnetometer
 #define Ki 0.005f		// integral gain governs rate of convergence of gyroscope biases
 #define halfT (1.0/(2.0*833.0))		// half the sample period
-
+#define PI 				((float)(3.14159265359))
 //---------------------------------------------------------------------------------------------------
 // Variable definitions
 
-float q0 = 1, q1 = 0, q2 = 0, q3 = 0;	// quaternion elements representing the estimated orientation
-float exInt = 0, eyInt = 0, ezInt = 0;	// scaled integral error
+static float q0 = 1, q1 = 0, q2 = 0, q3 = 0;	// quaternion elements representing the estimated orientation
+static float exInt = 0, eyInt = 0, ezInt = 0;	// scaled integral error
 
 //====================================================================================================
 // Function
 //====================================================================================================
 
-void IMUupdate(float gx, float gy, float gz, float ax, float ay, float az) {
+void IMU_Update(float gx, float gy, float gz, float ax, float ay, float az) {
 	float norm;
 	float vx, vy, vz;
 	float ex, ey, ez;         
@@ -86,6 +86,12 @@ void IMUupdate(float gx, float gy, float gz, float ax, float ay, float az) {
 	q3 = q3 / norm;
 }
 
+void IMU_GetPosition(float * IMUPosition)
+{
+			IMUPosition[0]	= atan2f(2.0f * (q0 * q1 + q2 * q3), q0 * q0 - q1 * q1 - q2 * q2 + q3 * q3) * 180.0f / PI;
+			IMUPosition[1]	= -asinf(2.0f * (q1 * q3 - q0 * q2)) * 180.0f / PI;
+			IMUPosition[2]	= atan2f(2.0f * (q1 * q2 + q0 * q3), q0 * q0 + q1 * q1 - q2 * q2 - q3 * q3) * 180.0f / PI;
+}
 //====================================================================================================
 // END OF CODE
 //====================================================================================================

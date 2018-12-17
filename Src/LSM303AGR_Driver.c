@@ -4,7 +4,7 @@
 #define SENSIVITY_2  4.0
 #define RESOLUTION_10bit 1024.0
 
-extern Sensor_t Sensor_Accel;
+Sensor_t Sensor_Accel;
 
 
 /**

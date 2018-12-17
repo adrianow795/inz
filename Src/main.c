@@ -55,31 +55,18 @@
 
 /* USER CODE BEGIN Includes */
 #include "usbd_cdc_if.h"
-#include "LSM303AGR_Driver.h"
 #include <stdio.h>
 #include "LSM6DSM_Driver.h"
-#include "String_Decoder.h"
-#include <cmath>
-//#include "Quaternion.h"
 #include "IMU.h"
-//#include "ComplementaryFilter.h"
-//#include "MadgwickAHRS.h"
-//#include "SensorTile.h"
+
 /* USER CODE END Includes */
 
 /* Private variables ---------------------------------------------------------*/
 
 /* USER CODE BEGIN PV */
 /* Private variables ---------------------------------------------------------*/
-#define PI 				3.14159265359
-
-uint8_t ReceivedData[60]; // Tablica przechowujaca odebrane dane
-uint8_t ReceivedDataFlag = 0; // Flaga informujaca o odebraniu danych
-int16_t Raw_Data_Accel[3];
-int16_t Raw_Data_Gyro[3];
-double G_Data_Accel[3];
-double DPS_Data_Gyro[3];
-uint8_t SPI_Data[10];
+	uint8_t ReceivedData[60]; // Tablica przechowujaca odebrane dane
+	uint8_t ReceivedDataFlag;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -87,45 +74,29 @@ void SystemClock_Config(void);
 
 /* USER CODE BEGIN PFP */
 /* Private function prototypes -----------------------------------------------*/
-uint8_t FindNull ( char * Buf);
-void CleanBuffer(char* Buf, uint8_t Size);
-void WriteIntoBuffer(char* Buf, char* str, uint8_t Buf_Size);
-void Request_handle(void);
-uint8_t FindNewLine( char* str);
-void LSM6DSM_Callibrate(int16_t *AccOffset, int16_t *GyroOffset);
-
+	uint8_t FindNewLine( char* str);
 /* USER CODE END PFP */
 
 /* USER CODE BEGIN 0 */
-//extern UART_HandleTypeDef huart5;
-	Sensor_t Sensor_Accel;
-  Sensor_t Sensor_LSM6DSM;
-	extern Request_t Request;
-	volatile uint8_t LSM6DSM_DataReady = 1;
-	uint8_t StatusReg = 0; 
-	uint8_t* StatusRegPointer;
+
 /* USER CODE END 0 */
 
 int main(void)
 {
 
   /* USER CODE BEGIN 1 */
-	Sensor_Accel.GPIOx = CS_A_GPIO_Port;
-	Sensor_Accel.GPIO_Pin = CS_A_Pin;
-	Sensor_Accel.Sensor = SENSOR_ACCEL;
-	
 	Sensor_LSM6DSM.GPIOx = CS_AG_GPIO_Port;
 	Sensor_LSM6DSM.GPIO_Pin = CS_AG_Pin;
 	Sensor_LSM6DSM.Sensor = SENSOR_AG;
 	
-	char* Tokens[MAX_ARGS_NUMBER+1];
-	char Buf[60] ;
-	uint8_t Value[2];
-	int16_t AccOffset[3] = {0,0,0};
-	int16_t GyroOffset[3] = {0,0,0};
-	StatusRegPointer = &StatusReg;
-	double ComplementaryData[3] = { 0.0,0.0,0.0 };
-	//float q0 = 0, q1=0,q2 =0, q3 =0;
+	char USB_TxBuf[100]; 
+	uint8_t WhoIam = 0xFF;
+	int16_t Raw_Data_Accel[3];
+	int16_t Raw_Data_Gyro[3];
+	float G_Data_Accel[3];
+	float DPS_Data_Gyro[3];
+	float ComplementaryData[3] = { 0.0f,0.0f,0.0f };
+
   /* USER CODE END 1 */
 
   /* MCU Configuration----------------------------------------------------------*/
@@ -152,131 +123,49 @@ int main(void)
   /* USER CODE BEGIN 2 */
 	SPI_Initialization();
 	HAL_Delay(15);
-	//LSM303AGR_Accel_Init();
-	LSM6DSM_Init();
-	LSM6DSM_Who_Am_I(Value);
-	sprintf(Buf,"Who_I_AM = %x \r\n",Value[0]);
-	CDC_Transmit_FS((uint8_t *)Buf,60);
-	HAL_Delay(1000);
 
+	LSM6DSM_Init();
+	LSM6DSM_Who_Am_I(&WhoIam);
+	if (WhoIam != 0x6A)
+	{
+		while(1)
+		{
+			sprintf(USB_TxBuf,"Invalid sensor initialization\r\nReset MCU!");
+			CDC_Transmit_FS((uint8_t *)USB_TxBuf,50);
+			HAL_Delay(500);
+		}
+	}
+	
+	HAL_Delay(500);
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
-
-
 	
-	char TxBufA[100], TxBufG[50];
-	LSM6DSM_Callibrate(AccOffset,GyroOffset);
-	
+	LSM6DSM_Callibrate();
   while (1)
   {
-		/*
-		LSM303AGR_Accel_Read_X_Y_Z(Raw_Data_Accel);
-		LSM303AGR_Data_Conv_To_G(Raw_Data_Accel,3,G_Data);
-		sprintf(Buf,"X = %0.2f, Y = %0.2f, Z = %0.2f ;\n\r",G_Data[0],G_Data[1],G_Data[2]);
-		CDC_Transmit_FS((uint8_t *)Buf,60);
-		
-		LSM6DSM_Accel_Read_X_Y_Z(Raw_Data_Accel);
-		LSM6DSM_Accel_Data_Conv_To_G(Raw_Data_Accel, G_Data, ACC_M_RANGE_2);
-		sprintf(Buf,"X = %0.2f, Y = %0.2f, Z = %0.2f ;\n\r",G_Data[0],G_Data[1],G_Data[2]);
-		CDC_Transmit_FS((uint8_t *)Buf,60);
-		for(int i = 0 ; i < 60; i++)
-		{
-			Buf[i] = 0;
-		}
-		
-		LSM6DSM_GYRO_Read_X_Y_Z(Raw_Data_Gyro);
-		LSM6DSM_Gyro_Data_Conv_To_DPS(Raw_Data_Gyro, DPS_Data, GYRO_M_RANGE_500);
-		sprintf(Buf,"Pitch = %3.2f, Roll = %3.2f, Yaw = %3.2f ;\n\r",DPS_Data[0],DPS_Data[1],DPS_Data[2]);
-
-		CDC_Transmit_FS((uint8_t *)Buf,60);
-		for(int i = 0 ; i < 60; i++)
-		{
-			Buf[i] = 0;
-		}
-		*/
-		/*
-		if(ReceivedDataFlag == 1)
-		{
-			ReceivedDataFlag = 0;
-			Find_Tokens((char*)ReceivedData,Tokens);
-			if(OK_STATUS == Decode_Tokens(Tokens))
-			{
-				Request_handle();
-			}
-			else
-			{
-				CDC_Transmit_FS((uint8_t*)"Unknown command\r\n",strlen("Unknown command\r\n")+1);
-			}
-			
-			*/
-			
-			/*sprintf(Buf,"Komenda: %d,\n\rLiczba argumentow: %d\r\n",Request.Command, Request.Number_Of_Arguments);
-			CDC_Transmit_FS((uint8_t*)Buf,FindNull(Buf));
-			
-			for (int i = 0; i < Request.Number_Of_Arguments; i++)
-			{
-				CleanBuffer(Buf,60);
-				sprintf(Buf,"Arg%d: 0x%x\r\n",i+1,Request.Arguments[i]);
-				CDC_Transmit_FS((uint8_t*)Buf,FindNull(Buf));
-				HAL_Delay(10);
-				HAL_GPIO_TogglePin(GPIOG, GPIO_PIN_12);
-			}			
-		} */
-		
-		
-    //HAL_Delay(100);
-//		SPI_Sensor_Read(Sensor_Accel, 0x1E,StatusRegPointer,1);
     if(LSM6DSM_DataReady)
 		{
 		  LSM6DSM_DataReady = 0;
+			
 			LSM6DSM_Accel_Read_X_Y_Z(Raw_Data_Accel);
 			LSM6DSM_Accel_Data_Conv_To_G(Raw_Data_Accel,G_Data_Accel,LSM6DSM_Get_Configuration(SENSOR_TYPE_ACC));
+			
 			LSM6DSM_GYRO_Read_X_Y_Z(Raw_Data_Gyro);
+			LSM6DSM_Gyro_Data_Conv_To_Radians(Raw_Data_Gyro,DPS_Data_Gyro,LSM6DSM_Get_Configuration(SENSOR_TYPE_GYRO));
 			
-			for(uint8_t i = 0; i < 3; i++)
-			{
-				Raw_Data_Gyro[i] -= GyroOffset[i];
-			}
-
+			IMU_Update(DPS_Data_Gyro[0],DPS_Data_Gyro[1],DPS_Data_Gyro[2],G_Data_Accel[0],G_Data_Accel[1],G_Data_Accel[2]);
+			IMU_GetPosition(ComplementaryData);
 			
-			LSM6DSM_Gyro_Data_Conv_To_DPS(Raw_Data_Gyro,DPS_Data_Gyro,LSM6DSM_Get_Configuration(SENSOR_TYPE_GYRO));
-
-			for (int i = 0; i < 3; i++)
-			{
-				DPS_Data_Gyro[i] *= 0.0174532925;
-			}
-			/*
-	    MadgwickAHRSupdate(DPS_Data_Gyro[0],DPS_Data_Gyro[1],DPS_Data_Gyro[2],G_Data_Accel[0],G_Data_Accel[1],G_Data_Accel[2],0,0,0);
-			MadgwickAHRSupdate((float)Raw_Data_Accel[0],(float)Raw_Data_Accel[1],(float)Raw_Data_Accel[2],(float)Raw_Data_Accel[0],(float)Raw_Data_Accel[1],(float)Raw_Data_Accel[2],0,0,0);
-			
-	  	GetQuaterion(&q0,&q1,&q2,&q3);
-			ComplementaryData[0]	= 57.2957795 * atan2f(q0*q1 + q2*q3, 0.5f - q1*q1 - q2*q2);
-			ComplementaryData[1]	= 57.2957795 * asinf(-2.0f * (q1*q3 - q0*q2));
-			ComplementaryData[2]		= 57.2957795 * atan2f(q1*q2 + q0*q3, 0.5f - q2*q2 - q3*q3);
-			*/
-			
-			//ComplementaryFilter_ComputeAngles(G_Data_Accel,DPS_Data_Gyro,833,ComplementaryData);
-			//sprintf(TxBufA,"A:%1.3f;%1.3f;%1.3f;G:%3.1f;%3.1f;%3.1f\r\n",G_Data_Accel[0],G_Data_Accel[1],G_Data_Accel[2],DPS_Data_Gyro[0],DPS_Data_Gyro[1],DPS_Data_Gyro[2]);
-		  //CDC_Transmit_FS((uint8_t*)TxBufA,FindNewLine(TxBufA));
-			
-			
-			
-			IMUupdate(DPS_Data_Gyro[0],DPS_Data_Gyro[1],DPS_Data_Gyro[2],G_Data_Accel[0],G_Data_Accel[1],G_Data_Accel[2]);
-			ComplementaryData[0]	= atan2f(2.0f * (q0 * q1 + q2 * q3), q0 * q0 - q1 * q1 - q2 * q2 + q3 * q3) * 180.0f / PI;
-			ComplementaryData[1]	= -asinf(2.0f * (q1 * q3 - q0 * q2)) * 180.0f / PI;
-			ComplementaryData[2]		= atan2f(2.0f * (q1 * q2 + q0 * q3), q0 * q0 + q1 * q1 - q2 * q2 - q3 * q3) * 180.0f / PI;
-
-			
-			sprintf(TxBufA,"%3.3f;%3.3f;%3.3f\n",ComplementaryData[0],ComplementaryData[1],ComplementaryData[2]); 
-			CDC_Transmit_FS((uint8_t*)TxBufA,FindNewLine(TxBufA));
-			//sprintf(TxBufA,"%3.2f;%3.2f;%3.2f\r\n",DPS_Data_Gyro[0],DPS_Data_Gyro[1],DPS_Data_Gyro[2]);
-			//CDC_Transmit_FS((uint8_t*)TxBufA,FindNewLine(TxBufA));
+			sprintf(USB_TxBuf,"%3.3f;%3.3f;%3.3f\n",ComplementaryData[0],ComplementaryData[1],ComplementaryData[2]); 
+			CDC_Transmit_FS((uint8_t*)USB_TxBuf,FindNewLine(USB_TxBuf));
+			//sprintf(USB_TxBuf,"%3.2f;%3.2f;%3.2f\r\n",DPS_Data_Gyro[0],DPS_Data_Gyro[1],DPS_Data_Gyro[2]);
+			//CDC_Transmit_FS((uint8_t*)USB_TxBuf,FindNewLine(USB_TxBuf));
 		}
 		
 		
-		//sprintf(TxBufA,"G:%3.1f;%3.1f;%3.1f\r\n",DPS_Data_Gyro[0],DPS_Data_Gyro[1],DPS_Data_Gyro[2]);
+		//sprintf(USB_TxBuf,"G:%3.1f;%3.1f;%3.1f\r\n",DPS_Data_Gyro[0],DPS_Data_Gyro[1],DPS_Data_Gyro[2]);
 		
 		
   /* USER CODE END WHILE */
@@ -293,7 +182,6 @@ int main(void)
 */
 void SystemClock_Config(void)
 {
-
   RCC_OscInitTypeDef RCC_OscInitStruct;
   RCC_ClkInitTypeDef RCC_ClkInitStruct;
   RCC_PeriphCLKInitTypeDef PeriphClkInit;
@@ -374,110 +262,7 @@ void SystemClock_Config(void)
 
 /* USER CODE BEGIN 4 */
 
-void Request_handle(void)
-{
-	char Response[60];
-	char Aux_Buf[5];
-	
-	switch (Request.Command)
-	{
-		// write  Reg_Add  reg_number  values
-		case CMD_WRITE:
-			if(Request.Arguments[1] > 1)
-			{
-				for ( uint8_t i = 0; i < Request.Arguments[1]; i++)
-				{
-					SPI_Sensor_Write(Sensor_LSM6DSM, Request.Arguments[0]+i, Request.Arguments[2+i]);
-					LSM6DSM_Analyze_Register(Request.Arguments[0]+i, Request.Arguments[2+i]);
-				}
-			}
-			else
-			{
-				SPI_Sensor_Write(Sensor_LSM6DSM, Request.Arguments[0], Request.Arguments[2]);
-			}
-			CleanBuffer(Response,60);
-			sprintf(Response,"ok\r\n");
-			CDC_Transmit_FS((uint8_t*)Response,FindNull(Response));
-			break;
-		
-		// read  Reg_Add   Regs_number(max 10)
-		case CMD_READ:
-			SPI_Sensor_Read(Sensor_LSM6DSM, Request.Arguments[0], SPI_Data, Request.Arguments[1]);
-			CleanBuffer(Response,60);
-			sprintf(Response,"0x%x ",SPI_Data[0]);
-			if(Request.Arguments[1] > 1)
-			{
-				for ( int i = 1; i < Request.Arguments[1]; i++)
-				{
-					sprintf(Aux_Buf,"0x%x ",SPI_Data[i]);
-					strcat(Response, Aux_Buf);
-				}
-			}
-			strcat(Response, "\r\n");
-			CDC_Transmit_FS((uint8_t*)Response,FindNull(Response));
-			break;
-		
-		// accel_m_xyz
-		case CMD_ACCEL_M_XYZ:
-			LSM6DSM_Accel_Read_X_Y_Z(Raw_Data_Accel);
-			CleanBuffer(Response,60);
-			sprintf(Response,"0x%x 0x%x 0x%x\n\r",Raw_Data_Accel[0],Raw_Data_Accel[1],Raw_Data_Accel[2]);
-			CDC_Transmit_FS((uint8_t*)Response,FindNull(Response));
-			break;
-		
-		// accel_m_xyz_g
-		case CMD_ACCEL_M_XYZ_G:
-			LSM6DSM_Accel_Read_X_Y_Z(Raw_Data_Accel);
-			LSM6DSM_Accel_Data_Conv_To_G(Raw_Data_Accel,G_Data_Accel, LSM6DSM_Get_Configuration(SENSOR_TYPE_ACC));
-			sprintf(Response,"%2.3f %2.3f %2.3f\n\r",G_Data_Accel[0],G_Data_Accel[1],G_Data_Accel[2]);
-			CDC_Transmit_FS((uint8_t*)Response,FindNull(Response));
-			break;
-		
-		// gyro_m_pyr
-		case CMD_GYRO_M_PYR_DPS:
-			LSM6DSM_GYRO_Read_X_Y_Z(Raw_Data_Gyro);
-			LSM6DSM_Gyro_Data_Conv_To_DPS(Raw_Data_Gyro, DPS_Data_Gyro, LSM6DSM_Get_Configuration(SENSOR_TYPE_GYRO));
-			sprintf(Response,"%4.3f %4.3f %4.3f\n\r",DPS_Data_Gyro[0],DPS_Data_Gyro[1],DPS_Data_Gyro[2]);
-			CDC_Transmit_FS((uint8_t*)Response,FindNull(Response));
-			break;
-		
-		case CMD_GYRO_M_PYR:
-			LSM6DSM_GYRO_Read_X_Y_Z(Raw_Data_Gyro);
-			CleanBuffer(Response,60);
-			sprintf(Response,"0x%x 0x%x 0x%x\n\r",Raw_Data_Gyro[0],Raw_Data_Gyro[1],Raw_Data_Gyro[2]);
-			CDC_Transmit_FS((uint8_t*)Response,FindNull(Response));
-		default:
-			break;
-	}
-	
-}
 
-void WriteIntoBuffer(char* Buf, char* str, uint8_t Buf_Size)
-{
-	uint8_t i = 0;
-	while ( str[i] != NULL && i < Buf_Size)
-	{
-		Buf[i] = str[i];
-	}
-}
-
-void CleanBuffer(char* Buf, uint8_t Size)
-{
-	for (int i = 0; i < Size; i++)
-	{
-		Buf[i] = 0;
-	}
-}
-
-uint8_t FindNull ( char * Buf)
-{
-	int i = 0; 
-	while (Buf[i] != 0)
-	{
-		i++;
-	}
-	return i;
-}
 
 uint8_t FindNewLine( char* str)
 {
@@ -487,45 +272,6 @@ uint8_t FindNewLine( char* str)
 		i++;
 	}
 	return ++i;
-}
-
-void LSM6DSM_Callibrate(int16_t *AccOffset, int16_t *GyroOffset)
-{
-	uint8_t SamplesCounter = 0;
-	int32_t AccSum[3] = {0,0,0};
-	int32_t GyroSum[3] = {0,0,0};
-	while(SamplesCounter < 200)
-	{
-		if(LSM6DSM_DataReady)
-		{
-			LSM6DSM_DataReady = 0;
-			LSM6DSM_Accel_Read_X_Y_Z(Raw_Data_Accel);
-			LSM6DSM_GYRO_Read_X_Y_Z(Raw_Data_Gyro);
-			SamplesCounter++;
-		}
-	}
-	SamplesCounter = 0;
-	
-	while(SamplesCounter < 50)
-	{
-		if(LSM6DSM_DataReady)
-		{
-			LSM6DSM_DataReady = 0;
-			LSM6DSM_Accel_Read_X_Y_Z(Raw_Data_Accel);
-			LSM6DSM_GYRO_Read_X_Y_Z(Raw_Data_Gyro);
-			SamplesCounter++;
-			for( uint8_t i = 0; i < 3; i++)
-			{
-				AccSum[i] += (int32_t)Raw_Data_Accel[i];
-				GyroSum[i] += (int32_t)Raw_Data_Gyro[i];
-			}
-		}
-	}
-	for ( uint8_t i = 0; i < 3; i++)
-	{
-		AccOffset[i] = (int16_t)(AccSum[i] / 50); 
-		GyroOffset[i] = (int16_t)(GyroSum[i] / 50);
-	}
 }
 
 /* USER CODE END 4 */

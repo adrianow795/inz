@@ -18,6 +18,8 @@ typedef struct sRequest
     int Number_Of_Arguments;
 }Request_t;
 
+	extern Request_t Request;
+
 enum eOperationStatus Find_Tokens(char * InStr, char * Tokens[]);
 enum eOperationStatus Decode_Tokens(char * Tokens[]);
 

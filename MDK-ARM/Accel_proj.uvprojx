@@ -631,26 +631,6 @@
               <FilePath>..\Inc\String_Decoder.h</FilePath>
             </File>
             <File>
-              <FileName>ComplementaryFilter.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\Inc\ComplementaryFilter.h</FilePath>
-            </File>
-            <File>
-              <FileName>ComplementaryFilter.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\Src\ComplementaryFilter.c</FilePath>
-            </File>
-            <File>
-              <FileName>MadgwickAHRS.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\Src\MadgwickAHRS.c</FilePath>
-            </File>
-            <File>
-              <FileName>MadgwickAHRS.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\Inc\MadgwickAHRS.h</FilePath>
-            </File>
-            <File>
               <FileName>IMU.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\Src\IMU.c</FilePath>
@@ -659,16 +639,6 @@
               <FileName>IMU.h</FileName>
               <FileType>5</FileType>
               <FilePath>..\Inc\IMU.h</FilePath>
-            </File>
-            <File>
-              <FileName>Quaternion.h</FileName>
-              <FileType>5</FileType>
-              <FilePath>..\Inc\Quaternion.h</FilePath>
-            </File>
-            <File>
-              <FileName>Quaternion.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\Src\Quaternion.c</FilePath>
             </File>
           </Files>
         </Group>

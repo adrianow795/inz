@@ -10,15 +10,11 @@
 #ifndef IMU_h
 #define IMU_h
 
-//----------------------------------------------------------------------------------------------------
-// Variable declaration
-
-extern float q0, q1, q2, q3;	// quaternion elements representing the estimated orientation
 
 //---------------------------------------------------------------------------------------------------
 // Function declaration
-
-void IMUupdate(float gx, float gy, float gz, float ax, float ay, float az);
+void IMU_Update(float gx, float gy, float gz, float ax, float ay, float az);
+void IMU_GetPosition(float * IMUPosition);
 
 #endif
 //=====================================================================================================

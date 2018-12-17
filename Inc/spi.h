@@ -80,8 +80,8 @@ void MX_SPI2_Init(void);
 
 /* USER CODE BEGIN Prototypes */
 void SPI_Initialization(void);
-void SPI_Accel_Write(uint8_t RegAdd, uint8_t Data);
-void SPI_Accel_Read(uint8_t RegAdd, uint8_t *Data, uint8_t BytesNumber);
+//void SPI_Accel_Write(uint8_t RegAdd, uint8_t Data);
+//void SPI_Accel_Read(uint8_t RegAdd, uint8_t *Data, uint8_t BytesNumber);
 void SPI_Sensor_Write(Sensor_t Sensor, uint8_t RegAdd, uint8_t Data);
 void SPI_Sensor_Read(Sensor_t Sensor, uint8_t RegAdd, uint8_t *Data, uint8_t BytesNumber);
 //uint8_t SPI_Accel_Read_Data(uint8_t RegAdd);
